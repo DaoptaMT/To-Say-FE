@@ -1,0 +1,101 @@
+name: React Native Expo EAS CI/CD
+
+on:
+  push:
+    branches:
+      - main   # chỉ chạy khi push lên branch main
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Lấy code từ repo
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Setup NodeJS
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # Cài dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Cài Expo + EAS CLI
+      - name: Install Expo & EAS CLI
+        run: npm install -g expo-cli eas-cli
+
+      # Đăng nhập Expo bằng Token
+      - name: Login to Expo
+        run: eas login --token ${{ secrets.EXPO_TOKEN }}
+
+      # Kiểm tra project
+      - name: Run Expo Doctor
+        run: npx expo-doctor
+
+      # Chạy test (nếu có viết test)
+      - name: Run tests
+        run: npm test --if-present
+
+      # Build Android
+      - name: Build Android APK
+        run: eas build --platform android --profile production --non-interactive
+
+      # Build iOS
+      - name: Build iOS IPA
+        run: eas build --platform ios --profile production --non-interactive
+
+  deploy-android:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Upload Android lên Google Play (sử dụng fastlane)
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Deploy to Google Play
+        run: |
+          cd android
+          fastlane supply \
+            --track production \
+            --json_key_data '${{ secrets.GOOGLE_PLAY_KEY }}' \
+            --package_name com.phantaanhdao.myapprn \
+            --aab build-output-path.aab
+
+  deploy-ios:
+    needs: build
+    runs-on: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Upload iOS lên TestFlight / App Store (fastlane)
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+
+      - name: Install Fastlane
+        run: gem install fastlane
+
+      - name: Deploy to App Store
+        run: |
+          cd ios
+          fastlane deliver \
+            --username ${{ secrets.APPLE_ID }} \
+            --app_identifier com.phantaanhdao.myapprn \
+            --api_key_path fastlane/apple_api_key.json \
+            --skip_screenshots \
+            --skip_metadata
