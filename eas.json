@@ -1,0 +1,38 @@
+{
+  "cli": {
+    "version": ">= 16.17.4",
+    "appVersionSource": "remote"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal",
+      "env": {
+        "API_URL": "https://dev-api.tosay.com"
+      }
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {
+        "API_URL": "https://preview-api.tosay.com"
+      }
+    },
+    "production": {
+      "android": {
+        "buildType": "apk"
+      },
+      "autoIncrement": true,
+      "env": {
+        "API_URL": "https://api.tosay.com"
+      }
+    },
+    "my-profile": {
+      "env": {
+        "API_URL": "https://api.tosay.com"
+      }
+    }
+  },
+  "submit": {
+    "production": {}
+  }
+}
