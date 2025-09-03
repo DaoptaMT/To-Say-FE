@@ -4,6 +4,7 @@ export default {
   expo: {
     name: "MyApp_RN",
     slug: "MyApp_RN",
+    owner: "phantaanhdao",
     version: "1.0.0",
     orientation: "portrait",
     icon: "./assets/images/icon.png",

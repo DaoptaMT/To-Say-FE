@@ -1,38 +1,58 @@
-import Icon from '@expo/vector-icons/MaterialIcons';
-import { router } from 'expo-router';
-import React, { useState } from 'react';
+import Icon from "@expo/vector-icons/MaterialIcons";
+import { router } from "expo-router";
+import React, { useState } from "react";
 import {
+  ActivityIndicator,
   Alert,
   Image,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
-  View
-} from 'react-native';
+  View,
+} from "react-native";
+import { login } from "../services/authService";
+import { AuthResponse, User } from "../types/auth";
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email_or_phone, setEmail_or_phone] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [name, setName] = useState<string | null>(null);
 
-  const handleLogin = () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+  const handleLogin = async () => {
+    if (!email_or_phone || !password) {
+      Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin");
       return;
     }
-    router.replace('/RegisterScreen');
+
+    try {
+      setLoading(true);
+      const res: AuthResponse = await login(email_or_phone, password, name ?? "");
+
+      const user: User = res.user;
+      console.log("Login success:", res);
+
+      Alert.alert("Thành công", `Xin chào ${user.name}`);
+      router.replace("/HomeScreen");
+    } catch (error: any) {
+      console.error("Login error:", error);
+      Alert.alert("Đăng nhập thất bại", error.message || "Có lỗi xảy ra");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleSocialLogin = (platform: string) => {
-    Alert.alert('Social Login', `Login with ${platform} - Feature coming soon!`);
+    Alert.alert("Social Login", `Login with ${platform} - Feature coming soon!`);
   };
 
   return (
     <View style={styles.container}>
       <View style={styles.header}>
         <Image source={require("./Image/logo.png")} style={styles.logo} />
-        <Text style={styles.title}>Nhập mail của bạn để</Text>
+        <Text style={styles.title}>Nhập mail hoặc SĐT của bạn để</Text>
         <Text style={styles.subtitle}>tiếp tục.</Text>
       </View>
 
@@ -41,9 +61,9 @@ const LoginScreen = () => {
           <Icon name="email" size={20} color="#666" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Email"
-            value={email}
-            onChangeText={setEmail}
+            placeholder="Email hoặc SĐT"
+            value={email_or_phone}
+            onChangeText={setEmail_or_phone}
             keyboardType="email-address"
             autoCapitalize="none"
           />
@@ -60,9 +80,10 @@ const LoginScreen = () => {
           />
           <TouchableOpacity
             onPress={() => setShowPassword(!showPassword)}
-            style={styles.eyeIcon}>
+            style={styles.eyeIcon}
+          >
             <Icon
-              name={showPassword ? 'visibility' : 'visibility-off'}
+              name={showPassword ? "visibility" : "visibility-off"}
               size={20}
               color="#666"
             />
@@ -71,12 +92,21 @@ const LoginScreen = () => {
 
         <TouchableOpacity
           style={styles.forgotPassword}
-          onPress={() => router.push('/ForgotPasswordScreen')}>
+          onPress={() => router.push("/ForgotPasswordScreen")}
+        >
           <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
-          <Text style={styles.loginButtonText}>Đăng nhập</Text>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={handleLogin}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.loginButtonText}>Đăng nhập</Text>
+          )}
         </TouchableOpacity>
 
         <View style={styles.divider}>
@@ -88,19 +118,21 @@ const LoginScreen = () => {
         <View style={styles.socialButtons}>
           <TouchableOpacity
             style={styles.socialButton}
-            onPress={() => handleSocialLogin('Facebook')}>
+            onPress={() => handleSocialLogin("Facebook")}
+          >
             <Icon name="facebook" size={24} color="#4267B2" />
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.socialButton}
-            onPress={() => handleSocialLogin('Google')}>
+            onPress={() => handleSocialLogin("Google")}
+          >
             <Text style={styles.googleIcon}>G</Text>
           </TouchableOpacity>
         </View>
 
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => router.push('/RegisterScreen')}>
+          <TouchableOpacity onPress={() => router.push("/RegisterScreen")}>
             <Text style={styles.registerLink}>Đăng ký ngay</Text>
           </TouchableOpacity>
         </View>
@@ -112,34 +144,34 @@ const LoginScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fdf7f7ff',
+    backgroundColor: "#fdf7f7ff",
     paddingHorizontal: 20,
   },
   header: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: 80,
     marginBottom: 40,
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
     marginTop: 20,
     marginBottom: 2,
   },
   subtitle: {
     fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
+    fontWeight: "bold",
+    color: "#333",
   },
   form: {
     flex: 1,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1,
-    borderColor: '#E0E0E0',
+    borderColor: "#E0E0E0",
     borderRadius: 10,
     marginBottom: 15,
     paddingHorizontal: 15,
@@ -151,84 +183,84 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   eyeIcon: {
     padding: 5,
   },
   forgotPassword: {
-    alignSelf: 'flex-end',
+    alignSelf: "flex-end",
     marginBottom: 30,
   },
   forgotPasswordText: {
-    color: '#FF6B6B',
+    color: "#FF6B6B",
     fontSize: 14,
   },
   loginButton: {
-    backgroundColor: '#FF6B6B',
+    backgroundColor: "#FF6B6B",
     paddingVertical: 15,
     borderRadius: 10,
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: 30,
   },
   loginButtonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   divider: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     marginBottom: 30,
   },
   dividerLine: {
     flex: 1,
     height: 1,
-    backgroundColor: '#E0E0E0',
+    backgroundColor: "#E0E0E0",
   },
   dividerText: {
     marginHorizontal: 15,
-    color: '#666',
+    color: "#666",
     fontSize: 14,
   },
   socialButtons: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
   },
   socialButton: {
     width: 50,
     height: 50,
     borderRadius: 25,
-    backgroundColor: '#ffffffff',
-    justifyContent: 'center',
-    alignItems: 'center',
+    backgroundColor: "#ffffffff",
+    justifyContent: "center",
+    alignItems: "center",
     marginHorizontal: 10,
   },
   googleIcon: {
     fontSize: 20,
-    fontWeight: 'bold',
-    color: '#DB4437',
+    fontWeight: "bold",
+    color: "#DB4437",
   },
   registerContainer: {
-    flexDirection: 'row',
-    justifyContent: 'center',
+    flexDirection: "row",
+    justifyContent: "center",
     marginBottom: 30,
   },
   registerText: {
-    color: '#666',
+    color: "#666",
     fontSize: 14,
   },
   registerLink: {
-    color: '#FF6B6B',
+    color: "#FF6B6B",
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   logo: {
     width: 150,
     height: 150,
     resizeMode: "contain",
-  }
+  },
 });
 
 export default LoginScreen;

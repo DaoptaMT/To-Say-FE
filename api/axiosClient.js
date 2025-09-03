@@ -1,42 +1,20 @@
-// // services/axiosClient.ts
-// import axios from "axios";
-// import { Platform } from "react-native";
-
-// let baseURL = "http://127.0.0.1:8000/api";
-
-// if (Platform.OS === "android") {
-//   // Android emulator (Android Studio)
-//   baseURL = "http://10.0.2.2:8000/api";
-// } else if (Platform.OS === "ios") {
-//   // iOS simulator
-//   baseURL = "http://127.0.0.1:8000/api";
-// }
-
-// if (!__DEV__) {
-//   // Hoặc đơn giản sửa tay khi test
-//   baseURL = "http://192.168.8.13:8000/api";
-// }
-
-// const axiosClient = axios.create({
-//   baseURL,
-//   headers: {
-//     "Content-Type": "application/json",
-//     Accept: "application/json",
-//   },
-// });
-
-// axiosClient.interceptors.response.use(
-//   (response) => response.data,
-//   (error) => {
-//     throw error.response?.data || error.message;
-//   }
-// );
-
-// export default axiosClient;
-
+import { store } from "@/store/authSlice";
 import axios from "axios";
+import { Platform } from "react-native";
 
-const baseURL = process.env.API_URL;
+let baseURL = "http://192.168.8.17:8000/api";
+
+if (__DEV__) {
+  if (Platform.OS === "android") {
+    baseURL = "http://10.0.2.2:8000/api";
+  } else if (Platform.OS === "ios") {
+    baseURL = "http://127.0.0.1:8000/api";
+  } else {
+    baseURL = "http://127.0.0.1:8000/api";
+  }
+} else {
+  baseURL = "https://api.tosay.com";
+}
 
 const axiosClient = axios.create({
   baseURL,
@@ -46,11 +24,17 @@ const axiosClient = axios.create({
   },
 });
 
-axiosClient.interceptors.response.use(
-  (response) => response.data,
-  (error) => {
-    throw error.response?.data || error.message;
-  }
+axiosClient.interceptors.request.use(
+  (config) => {
+    const state = store.getState();
+    const token = state.auth.token;
+
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
 );
 
 export default axiosClient;
