@@ -1,21 +1,21 @@
 import axiosClient from "../api/axiosClient";
-import { AuthResponse, testConnectResponse } from "../types/auth";
+import { AuthResponse, RegisterResponse } from "../types/auth";
 
-export const register = async (name: string, email: string, password: string, phone: string, avata_url: string, bio: string) => {
-    try {
-        const response = await axiosClient.post("/register", {
-            name,
-            email,
-            password,
-            phone,
-            avata_url,
-            bio
-        });
-        return response.data;
-    } catch (error) {
-        throw error;
-    }
-};
+// export const register = async (name: string, email: string, password: string, phone: string, avata_url: string, bio: string) => {
+//     try {
+//         const response = await axiosClient.post("/register", {
+//             name,
+//             email,
+//             password,
+//             phone,
+//             avata_url,
+//             bio
+//         });
+//         return response.data;
+//     } catch (error) {
+//         throw error;
+//     }
+// };
 
 export const logout = async () => {
     try {
@@ -53,18 +53,29 @@ export const resetPassword = async (email: string, otp: string, newPassword: str
     }
 }
 
-export const testConnect = async (): Promise<testConnectResponse> => {
-  const response = await axiosClient.get<testConnectResponse>("/ping");
-  try {
-    return response.data;
-  } catch (error) {
-    throw error;
-  }
+export const login = async (email_or_phone: string, password: string, name: string): Promise<AuthResponse> => {
+    try {
+        const res = await axiosClient.post<AuthResponse>("/login", { email_or_phone, password, name });
+        return res.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
-export const login = async (email_or_phone: string, password: string, name: string): Promise<AuthResponse> => {
-  const res = await axiosClient.post<AuthResponse>("/login", { email_or_phone, password, name });
-  return res.data;
+export const register = async (name: string, email: string, password: string, phone: string, avata_url: string, bio: string): Promise<RegisterResponse> => {
+    try {
+        const response = await axiosClient.post<RegisterResponse>("/register", {
+            name,
+            email,
+            password,
+            phone,
+            avata_url,
+            bio
+        });
+        return response.data;
+    } catch (error) {
+        throw error;
+    }
 };
 
 export default {
@@ -74,5 +85,4 @@ export default {
     userInfo,
     forgotPassword,
     resetPassword,
-    testConnect,
 };

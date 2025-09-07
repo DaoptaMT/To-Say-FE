@@ -1,18 +1,15 @@
 import Icon from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
 import React from 'react';
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
-
   const blogPosts = [
     {
       id: 1,
