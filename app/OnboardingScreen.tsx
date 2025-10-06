@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   Dimensions,
   StyleSheet,
@@ -42,12 +42,12 @@ const OnboardingScreen = () => {
     if (currentIndex < onboardingData.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
-      router.replace("/LoginScreen");
+      router.replace("./auth/LoginScreen");
     }
   };
 
   const handleSkip = () => {
-    router.replace("/LoginScreen");
+    router.replace("./auth/LoginScreen");
   };
 
   const currentData = onboardingData[currentIndex];

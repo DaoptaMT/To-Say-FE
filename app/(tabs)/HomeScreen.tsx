@@ -1,17 +1,16 @@
 import Icon from '@expo/vector-icons/MaterialIcons';
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
+import { useRouter } from 'expo-router';
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const HomeScreen = () => {
-  const navigation = useNavigation();
+  const router = useRouter();
 
   const blogPosts = [
     {
@@ -19,16 +18,24 @@ const HomeScreen = () => {
       title: 'Changing Hiking Diary',
       author: 'John Doe',
       image: 'https://via.placeholder.com/300x200',
-      likes: 24,
-      comments: 8,
     },
     {
       id: 2,
       title: 'Travel Adventures',
       author: 'Jane Smith',
       image: 'https://via.placeholder.com/300x200',
-      likes: 45,
-      comments: 12,
+    },
+    {
+      id: 3,
+      title: 'Changing Hiking Diary',
+      author: 'John Doe',
+      image: 'https://via.placeholder.com/300x200',
+    },
+    {
+      id: 4,
+      title: 'Travel Adventures',
+      author: 'Jane Smith',
+      image: 'https://via.placeholder.com/300x200',
     },
   ];
 
@@ -39,9 +46,7 @@ const HomeScreen = () => {
           <Text style={styles.greeting}>Xin chào!</Text>
           <Text style={styles.username}>Nguyễn Văn A</Text>
         </View>
-        <TouchableOpacity
-        //   onPress={() => router.replace('/Notification')}
-          >
+        <TouchableOpacity>
           <Icon name="notifications" size={24} color="#333" />
         </TouchableOpacity>
       </View>
@@ -57,22 +62,16 @@ const HomeScreen = () => {
           <TouchableOpacity
             key={post.id}
             style={styles.postCard}
-            // onPress={() => router.push('/Detail', {post})}
-            >
+            onPress={() =>
+              router.push({
+                pathname: "/DetailScreen",
+              })
+            }
+          >
             <Image source={{uri: post.image}} style={styles.postImage} />
             <View style={styles.postContent}>
               <Text style={styles.postTitle}>{post.title}</Text>
               <Text style={styles.postAuthor}>Bởi {post.author}</Text>
-              <View style={styles.postStats}>
-                <View style={styles.stat}>
-                  <Icon name="favorite" size={16} color="#FF6B6B" />
-                  <Text style={styles.statText}>{post.likes}</Text>
-                </View>
-                <View style={styles.stat}>
-                  <Icon name="comment" size={16} color="#666" />
-                  <Text style={styles.statText}>{post.comments}</Text>
-                </View>
-              </View>
             </View>
           </TouchableOpacity>
         ))}

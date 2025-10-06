@@ -1,6 +1,6 @@
 import Icon from "@expo/vector-icons/MaterialIcons";
 import { router } from "expo-router";
-import React, { useState } from "react";
+import { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -45,7 +45,7 @@ const LoginScreen = () => {
   const handleLogin = async () => {
     setLoading(true);
     Alert.alert("Đăng nhập thành công", "Xin chào bạn!");
-    router.replace("/(tabs)/index");
+    router.replace("/(tabs)/HomeScreen");
     setLoading(false);
   };
 
@@ -56,8 +56,8 @@ const LoginScreen = () => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Image source={require("./Image/logo.png")} style={styles.logo} />
-        <Text style={styles.title}>Nhập mail hoặc SĐT của bạn để</Text>
+        <Image source={require("../Image/logo.png")} style={styles.logo} />
+        <Text style={styles.title}>Nhập email của bạn để</Text>
         <Text style={styles.subtitle}>tiếp tục.</Text>
       </View>
 
@@ -97,7 +97,7 @@ const LoginScreen = () => {
 
         <TouchableOpacity
           style={styles.forgotPassword}
-          onPress={() => router.push("/ForgotPasswordScreen")}
+          onPress={() => router.push("/auth/ForgotPasswordScreen")}
         >
           <Text style={styles.forgotPasswordText}>Quên mật khẩu?</Text>
         </TouchableOpacity>
@@ -137,7 +137,7 @@ const LoginScreen = () => {
 
         <View style={styles.registerContainer}>
           <Text style={styles.registerText}>Chưa có tài khoản? </Text>
-          <TouchableOpacity onPress={() => router.push("/RegisterScreen")}>
+          <TouchableOpacity onPress={() => router.push("/auth/RegisterScreen")}>
             <Text style={styles.registerLink}>Đăng ký ngay</Text>
           </TouchableOpacity>
         </View>

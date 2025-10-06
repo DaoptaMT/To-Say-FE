@@ -1,13 +1,11 @@
-import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import { useLocalSearchParams, useRouter } from "expo-router";
 import {
-    Image,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -148,89 +146,59 @@ import Icon from 'react-native-vector-icons/MaterialIcons';
 
 // export default DetailScreen;
 
+// -------------------------------- đoạn code dưới dùng để demo ------------------------------------ //
+
 const DetailScreen = () => {
-  const navigation = useNavigation();
-  const route = useRoute();
-
-  // ❌ Code cũ bị lỗi nếu không truyền params:
-  // const { post } = route.params;
-
-  // ✅ Thay bằng dữ liệu mẫu khi test:
+  // const navigation = useNavigation();
+  // const route = useRoute();
+  const router = useRouter();
+  const params = useLocalSearchParams();
+  
   const samplePosts = [
     {
       id: 1,
-      author: 'Nguyễn Văn A',
+      author: 'Admin',
       title: 'Chuyến đi Đà Lạt thật tuyệt vời!',
       image:
         'https://images.unsplash.com/photo-1524499982521-1ffd58dd89ea?auto=format&fit=crop&w=800&q=60',
-      likes: 12,
-      comments: 3,
     },
     {
       id: 2,
-      author: 'Trần Thị B',
+      author: 'Admin',
       title: 'Bí quyết học React Native hiệu quả 📱',
       image:
         'https://images.unsplash.com/photo-1587614382346-ac7e3b5f1f43?auto=format&fit=crop&w=800&q=60',
-      likes: 34,
-      comments: 10,
     },
     {
       id: 3,
-      author: 'Lê Minh C',
+      author: 'Admin',
       title: 'Tự học lập trình có khó không?',
       image:
         'https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=800&q=60',
-      likes: 20,
-      comments: 7,
     },
   ];
 
-  // ✅ Chọn ngẫu nhiên 1 post để hiển thị khi không có params:
-  const post = route?.params?.post || samplePosts[Math.floor(Math.random() * samplePosts.length)];
-
-  const [liked, setLiked] = useState(false);
-  const [comment, setComment] = useState('');
-
-  const comments = [
-    {
-      id: 1,
-      author: 'Alice Johnson',
-      content: 'Great post! Really enjoyed reading it.',
-      time: '1 giờ trước',
-    },
-    {
-      id: 2,
-      author: 'Bob Smith',
-      content: 'Thanks for sharing this valuable information.',
-      time: '2 giờ trước',
-    },
-  ];
-
-  const handleLike = () => setLiked(!liked);
-
-  const handleComment = () => {
-    if (comment.trim()) {
-      // Thêm logic gửi bình luận ở đây
-      setComment('');
-    }
-  };
+    const post = params?.post
+    ? JSON.parse(params.post)
+    : samplePosts[Math.floor(Math.random() * samplePosts.length)];
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => router.back()}>
           <Icon name="arrow-back" size={24} color="#333" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Chi tiết bài viết</Text>
-        <TouchableOpacity>
-          <Icon name="share" size={24} color="#333" />
         </TouchableOpacity>
       </View>
 
-      {/* Nội dung */}
-      <ScrollView style={styles.content}>
+      <ScrollView
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          flexGrow: 1,
+          paddingHorizontal: 20,
+          paddingBottom: 40,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.postHeader}>
           <View style={styles.authorInfo}>
             <View style={styles.avatar}>
@@ -250,66 +218,18 @@ const DetailScreen = () => {
         <Image source={{uri: post.image}} style={styles.postImage} />
         <Text style={styles.postContent}>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua...
         </Text>
 
-        {/* Hành động */}
-        <View style={styles.postActions}>
-          <TouchableOpacity style={styles.actionButton} onPress={handleLike}>
-            <Icon
-              name={liked ? 'favorite' : 'favorite-border'}
-              size={20}
-              color={liked ? '#FF6B6B' : '#666'}
-            />
-            <Text style={[styles.actionText, liked && styles.likedText]}>
-              {post.likes + (liked ? 1 : 0)}
-            </Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionButton}>
-            <Icon name="comment" size={20} color="#666" />
-            <Text style={styles.actionText}>{post.comments}</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={styles.actionButton}>
-            <Icon name="share" size={20} color="#666" />
-          </TouchableOpacity>
-        </View>
-
-        {/* Bình luận */}
-        <View style={styles.commentsSection}>
-          <Text style={styles.commentsTitle}>Bình luận</Text>
-          {comments.map(commentItem => (
-            <View key={commentItem.id} style={styles.commentItem}>
-              <View style={styles.commentAvatar}>
-                <Text style={styles.commentAvatarText}>
-                  {commentItem.author.charAt(0)}
-                </Text>
-              </View>
-              <View style={styles.commentContent}>
-                <View style={styles.commentHeader}>
-                  <Text style={styles.commentAuthor}>{commentItem.author}</Text>
-                  <Text style={styles.commentTime}>{commentItem.time}</Text>
-                </View>
-                <Text style={styles.commentText}>{commentItem.content}</Text>
-              </View>
-            </View>
-          ))}
-        </View>
       </ScrollView>
-
-      {/* Ô nhập bình luận */}
-      <View style={styles.commentInput}>
-        <TextInput
-          style={styles.input}
-          placeholder="Viết bình luận..."
-          value={comment}
-          onChangeText={setComment}
-          multiline
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={handleComment}>
-          <Icon name="send" size={20} color="#FF6B6B" />
-        </TouchableOpacity>
-      </View>
     </View>
   );
 };
@@ -334,10 +254,10 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#333',
   },
-  content: {
-    flex: 1,
-    paddingHorizontal: 20,
-  },
+  // content: {
+  //   // flex: 1,
+  //   // paddingHorizontal: 20,
+  // },
   postHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',

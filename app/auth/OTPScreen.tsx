@@ -1,13 +1,14 @@
 import Icon from '@expo/vector-icons/MaterialIcons';
 import { useNavigation, useRoute } from '@react-navigation/native';
-import React, { useRef, useState } from 'react';
+import { router } from "expo-router";
+import { useRef, useState } from 'react';
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 const OTPScreen = () => {
@@ -33,7 +34,7 @@ const OTPScreen = () => {
       Alert.alert('Error', 'Please enter complete OTP');
       return;
     }
-    // router.push('/ResetPasswordScreen', {email});
+    router.push('/auth/ResetPasswordScreen', {email});
   };
 
   const handleResendOTP = () => {
@@ -52,7 +53,6 @@ const OTPScreen = () => {
         <Icon name="sms" size={60} color="#FF6B6B" />
         <Text style={styles.title}>Xác thực OTP</Text>
         <Text style={styles.subtitle}>
-          {/* Mã xác thực đã được gửi đến {email} */}
         </Text>
       </View>
 
@@ -72,7 +72,7 @@ const OTPScreen = () => {
           ))}
         </View>
 
-        <TouchableOpacity style={styles.verifyButton} onPress={handleVerifyOTP}>
+        <TouchableOpacity style={styles.verifyButton} onPress={() => router.push("/auth/ResetPasswordScreen")}>
           <Text style={styles.verifyButtonText}>Xác thực</Text>
         </TouchableOpacity>
 
@@ -99,6 +99,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    marginTop: 80,
     marginBottom: 40,
   },
   title: {

@@ -1,25 +1,28 @@
 import Icon from '@expo/vector-icons/MaterialIcons';
 import { useNavigation } from '@react-navigation/native';
 import { router } from 'expo-router';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
-    Alert,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
+  Alert,
+  Image,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
-const ResetPasswordScreen = () => {
+const RegisterScreen = () => {
   const navigation = useNavigation();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleResetPassword = () => {
-    if (!password || !confirmPassword) {
+  const handleRegister = () => {
+    if (!name || !email || !password || !confirmPassword) {
       Alert.alert('Error', 'Please fill in all fields');
       return;
     }
@@ -27,31 +30,56 @@ const ResetPasswordScreen = () => {
       Alert.alert('Error', 'Passwords do not match');
       return;
     }
-    Alert.alert('Success', 'Password reset successfully!', [
-      {text: 'OK', onPress: () => router.replace('/LoginScreen')},
+    Alert.alert('Success', 'Account created successfully!', [
+      {text: 'OK', onPress: () => router.replace('/auth/LoginScreen')},
     ]);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
+
+      
+      {/* <TouchableOpacity
         style={styles.backButton}
         onPress={() => navigation.goBack()}>
         <Icon name="arrow-back" size={24} color="#333" />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
 
       <View style={styles.header}>
-        <Icon name="lock" size={60} color="#FF6B6B" />
-        <Text style={styles.title}>Đặt lại mật khẩu</Text>
-        <Text style={styles.subtitle}>Tạo mật khẩu mới cho tài khoản của bạn</Text>
+        <Image source={require("../Image/logo.png")} style={styles.logo} />
+        {/* <Icon name="person-add" size={60} color="#FF6B6B" /> */}
+        <Text style={styles.title}>Tạo tài khoản</Text>
+        <Text style={styles.subtitle}>Đăng ký để bắt đầu</Text>
       </View>
 
       <View style={styles.form}>
         <View style={styles.inputContainer}>
+          <Icon name="person" size={20} color="#666" style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Họ và tên"
+            value={name}
+            onChangeText={setName}
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
+          <Icon name="email" size={20} color="#666" style={styles.inputIcon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+          />
+        </View>
+
+        <View style={styles.inputContainer}>
           <Icon name="lock" size={20} color="#666" style={styles.inputIcon} />
           <TextInput
             style={styles.input}
-            placeholder="Mật khẩu mới"
+            placeholder="Mật khẩu"
             value={password}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
@@ -87,9 +115,16 @@ const ResetPasswordScreen = () => {
           </TouchableOpacity>
         </View>
 
-        <TouchableOpacity style={styles.resetButton} onPress={handleResetPassword}>
-          <Text style={styles.resetButtonText}>Đặt lại mật khẩu</Text>
+        <TouchableOpacity style={styles.registerButton} onPress={handleRegister}>
+          <Text style={styles.registerButtonText}>Đăng ký</Text>
         </TouchableOpacity>
+
+        <View style={styles.loginContainer}>
+          <Text style={styles.loginText}>Đã có tài khoản? </Text>
+          <TouchableOpacity onPress={() => router.push('/auth/LoginScreen')}>
+            <Text style={styles.loginLink}>Đăng nhập ngay</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </View>
   );
@@ -98,7 +133,7 @@ const ResetPasswordScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fdf7f7ff',
     paddingHorizontal: 20,
   },
   backButton: {
@@ -107,6 +142,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
+    marginTop: 80,
     marginBottom: 40,
   },
   title: {
@@ -119,7 +155,6 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
-    textAlign: 'center',
   },
   form: {
     flex: 1,
@@ -145,18 +180,38 @@ const styles = StyleSheet.create({
   eyeIcon: {
     padding: 5,
   },
-  resetButton: {
+  registerButton: {
     backgroundColor: '#FF6B6B',
     paddingVertical: 15,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 20,
+    marginBottom: 30,
   },
-  resetButtonText: {
+  registerButtonText: {
     color: '#FFFFFF',
     fontSize: 16,
     fontWeight: 'bold',
   },
+  loginContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginBottom: 30,
+  },
+  loginText: {
+    color: '#666',
+    fontSize: 14,
+  },
+  loginLink: {
+    color: '#FF6B6B',
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: "contain",
+  },
 });
 
-export default ResetPasswordScreen;
+export default RegisterScreen;
