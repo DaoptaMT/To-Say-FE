@@ -11,8 +11,6 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { login } from "../services/authService";
-import { AuthResponse, User } from "../types/auth";
 
 const LoginScreen = () => {
   const [email_or_phone, setEmail_or_phone] = useState("");
@@ -21,30 +19,37 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
   const [name, setName] = useState<string | null>(null);
 
+  // const handleLogin = async () => {
+    // if (!email_or_phone || !password) {
+    //   Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin");
+    //   return;
+    // }
+
+    // try {
+    //   setLoading(true);
+    //   const res: AuthResponse = await login(email_or_phone, password, name ?? "");
+
+    //   const user: User = res.user;
+    //   console.log("Login success:", res);
+
+    //   Alert.alert("Thành công", `Xin chào ${user.name}`);
+      // router.replace("/HomeScreen");
+    // } catch (error: any) {
+    //   console.error("Login error:", error);
+    //   Alert.alert("Đăng nhập thất bại", error.message || "Có lỗi xảy ra");
+    // } finally {
+    //   setLoading(false);
+    // }
+  // };
+
   const handleLogin = async () => {
-    if (!email_or_phone || !password) {
-      Alert.alert("Lỗi", "Vui lòng nhập đầy đủ thông tin");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res: AuthResponse = await login(email_or_phone, password, name ?? "");
-
-      const user: User = res.user;
-      console.log("Login success:", res);
-
-      Alert.alert("Thành công", `Xin chào ${user.name}`);
-      router.replace("/HomeScreen");
-    } catch (error: any) {
-      console.error("Login error:", error);
-      Alert.alert("Đăng nhập thất bại", error.message || "Có lỗi xảy ra");
-    } finally {
-      setLoading(false);
-    }
+    setLoading(true);
+    Alert.alert("Đăng nhập thành công", "Xin chào bạn!");
+    router.replace("/(tabs)/index");
+    setLoading(false);
   };
 
-  const handleSocialLogin = (platform: string) => {
+  const handleSocialLogin = () => {
     Alert.alert("Social Login", `Login with ${platform} - Feature coming soon!`);
   };
 

@@ -4,6 +4,7 @@ import { router } from 'expo-router';
 import React, { useState } from 'react';
 import {
   Alert,
+  Image,
   StyleSheet,
   Text,
   TextInput,
@@ -43,7 +44,8 @@ const RegisterScreen = () => {
       </TouchableOpacity>
 
       <View style={styles.header}>
-        <Icon name="person-add" size={60} color="#FF6B6B" />
+        <Image source={require("./Image/logo.png")} style={styles.logo} />
+        {/* <Icon name="person-add" size={60} color="#FF6B6B" /> */}
         <Text style={styles.title}>Tạo tài khoản</Text>
         <Text style={styles.subtitle}>Đăng ký để bắt đầu</Text>
       </View>
@@ -201,6 +203,11 @@ const styles = StyleSheet.create({
     color: '#FF6B6B',
     fontSize: 14,
     fontWeight: 'bold',
+  },
+  logo: {
+    width: 150,
+    height: 150,
+    resizeMode: "contain",
   },
 });
 
